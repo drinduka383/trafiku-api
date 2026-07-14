@@ -95,7 +95,7 @@ summary without storing the live feed.
 The repository listener was exercised successfully on 2026-07-14 and received
 a `bus_update` array containing 217 bus objects.
 
-## Line 1 widget stop mapping
+## `lak-tek` stop mapping
 
 The four user-supplied Google Maps links were resolved to coordinates and then
 matched to the nearest API station. Each source/destination pair shares the
@@ -108,15 +108,14 @@ same directional Line 1 ID.
 | [Fakulteti Teknik source](https://maps.app.goo.gl/UtGtEJE6yrAMfYfG8) | `42.649551, 21.165991` | `5d5565af8daa9a087b2847da` — Fakulteti Teknik (Shkuarja) | `5d5525d1ee0dd803fc6a51b9` |
 | [Lakrishte destination](https://maps.app.goo.gl/meoapeLfqL8DWrE56) | `42.653575, 21.150114` | `5d5566d08daa9a087b2859b1` — Lakrishte | `5d5525d1ee0dd803fc6a51b9` |
 
-`line1_widget.py` queries the two source stops, filters by the exact directional
-line ID, orders live predictions by ETA, and uses the API's reverse-geocoded
-`address` as the approximate current location. It renders exactly two rows per
-direction but does not invent a second bus when fewer are active.
+`lak_tek.py` queries the two boarding stops and returns structured data rather
+than presentation markup. Station predictions are merged by bus ID with an
+optional `bus_update` payload. A live-only bus is retained only when the exact
+boarding station is still present in `upcoming_stations`; `passed_stations` is
+never treated as catchable.
 
-Live verification at `2026-07-14T20:52:04+02:00` returned no approaching Line 1
-bus toward Fakulteti Teknik and one return bus at 10 minutes near Banesat e
-Standardit. The widget rendered the remaining slots as unavailable, confirming
-that low-service states keep the dashboard shape without false predictions.
+Consumers choose their own polling, caching, and presentation policy. This
+branch contains no dependency on a particular website or device.
 
 ## Evidence retained in Git
 

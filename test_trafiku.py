@@ -1,6 +1,6 @@
 import unittest
 
-from line1_widget import DIRECTIONS, render
+from lak_tek import DIRECTIONS, arrivals
 from trafiku import TrafikuClient
 
 
@@ -29,26 +29,46 @@ class ClientContractTest(unittest.TestCase):
             client.upcoming_stations("bus", 181, 42.6)
 
 
-class Line1WidgetTest(unittest.TestCase):
-    def test_filters_sorts_and_pads_each_direction(self):
+class LakTekTest(unittest.TestCase):
+    def test_merges_predictions_and_drops_buses_past_the_boarding_stop(self):
         class FakeClient:
+            def __init__(self):
+                self.routes = []
+
             def incoming_buses(self, station_id, _longitude, _latitude):
-                if station_id != DIRECTIONS[0][1]:
+                if station_id != DIRECTIONS[0]["station_id"]:
                     return {"success": True, "data": {"incoming_buses": []}}
-                line_id = DIRECTIONS[0][2]
+                line_id = DIRECTIONS[0]["line_id"]
                 return {"success": True, "data": {"incoming_buses": [
-                    {"line_id": line_id, "distance_from_station_min": 9, "address": "Lakrishtë"},
-                    {"line_id": "another-line", "distance_from_station_min": 1, "address": "wrong"},
-                    {"line_id": line_id, "distance_from_station_min": 3, "address": "Rr. Nëna Terezë"},
+                    {"_id": "predicted", "line_id": line_id, "distance_from_station_min": 3, "address": "M9"},
+                    {"_id": "wrong-line", "line_id": "other", "distance_from_station_min": 1},
                 ]}}
 
-        self.assertEqual(render(FakeClient()), """lakrishte -> fakulteti teknik:
-- 3 min, currently @ Rr. Nena Tereze
-- 9 min, currently @ Lakrishte
+            def upcoming_stations(self, bus_id, _longitude, _latitude):
+                self.routes.append(bus_id)
+                stops = [{"_id": "next", "name": "Dardania"}]
+                if bus_id == "approaching":
+                    stops.append({
+                        "_id": DIRECTIONS[0]["station_id"],
+                        "name": "Lakrishte",
+                        "distance_to_station_min": 7,
+                    })
+                return {"success": True, "data": {
+                    "passed_stations": [{"_id": DIRECTIONS[0]["station_id"]}],
+                    "upcoming_stations": stops,
+                }}
 
-fakulteti teknik -> lakrishte:
-- -- min, no live bus reported
-- -- min, no live bus reported""")
+        client = FakeClient()
+        line_id = DIRECTIONS[0]["line_id"]
+        result = arrivals(client, [
+            {"_id": "predicted", "line": {"_id": line_id}},
+            {"_id": "approaching", "line": {"_id": line_id}},
+            {"_id": "passed", "line": {"_id": line_id}},
+            {"_id": "hidden", "line": {"_id": line_id}, "is_visible": False},
+        ])
+        buses = result["data"]["directions"][0]["buses"]
+        self.assertEqual([bus["id"] for bus in buses], ["predicted", "approaching"])
+        self.assertEqual(client.routes, ["approaching", "passed"])
 
 
 if __name__ == "__main__":
