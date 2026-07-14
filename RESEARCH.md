@@ -95,29 +95,6 @@ summary without storing the live feed.
 The repository listener was exercised successfully on 2026-07-14 and received
 a `bus_update` array containing 217 bus objects.
 
-## Line 1 widget stop mapping
-
-The four user-supplied Google Maps links were resolved to coordinates and then
-matched to the nearest API station. Each source/destination pair shares the
-same directional Line 1 ID.
-
-| Role | Google coordinate | API station | Line 1 direction |
-| --- | --- | --- | --- |
-| [Lakrishte source](https://maps.app.goo.gl/sNBSG75xPKX49Mto7) | `42.653570, 21.150367` | `5d556ddb8daa9a087b28cc6c` — Dardani - Perballe Lakrishtes | `5d552616ee0dd803fc6a55b4` |
-| [Fakulteti Teknik destination](https://maps.app.goo.gl/Jt1gYNtxcnybizEt9) | `42.649618, 21.165648` | `5d5560518daa9a087b27f1c1` — Fakulteti Teknik (Kthimi) | `5d552616ee0dd803fc6a55b4` |
-| [Fakulteti Teknik source](https://maps.app.goo.gl/UtGtEJE6yrAMfYfG8) | `42.649551, 21.165991` | `5d5565af8daa9a087b2847da` — Fakulteti Teknik (Shkuarja) | `5d5525d1ee0dd803fc6a51b9` |
-| [Lakrishte destination](https://maps.app.goo.gl/meoapeLfqL8DWrE56) | `42.653575, 21.150114` | `5d5566d08daa9a087b2859b1` — Lakrishte | `5d5525d1ee0dd803fc6a51b9` |
-
-`line1_widget.py` queries the two source stops, filters by the exact directional
-line ID, orders live predictions by ETA, and uses the API's reverse-geocoded
-`address` as the approximate current location. It renders exactly two rows per
-direction but does not invent a second bus when fewer are active.
-
-Live verification at `2026-07-14T20:52:04+02:00` returned no approaching Line 1
-bus toward Fakulteti Teknik and one return bus at 10 minutes near Banesat e
-Standardit. The widget rendered the remaining slots as unavailable, confirming
-that low-service states keep the dashboard shape without false predictions.
-
 ## Evidence retained in Git
 
 - `evidence/stations-2026-07-14.json`: complete anonymous `/stations` response;
