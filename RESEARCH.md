@@ -106,11 +106,17 @@ The four supplied map points resolve to these directional Line 1 stops:
 | Fakulteti Teknik source | `5d5565af8daa9a087b2847da` — Fakulteti Teknik (Shkuarja) | `5d5525d1ee0dd803fc6a51b9` |
 | Lakrishte destination | `5d5566d08daa9a087b2859b1` — Lakrishte | `5d5525d1ee0dd803fc6a51b9` |
 
-`lak_tek.py` returns structured data. Station predictions are merged by bus ID
-with an optional `bus_update` payload. A live-only bus is retained only when
-the exact boarding station remains in `upcoming_stations`; a station found
-only in `passed_stations` is not catchable. `line1_widget.py` only formats that
-result and has no route logic of its own.
+`lak_tek.py` returns structured data. When a `bus_update` snapshot is supplied,
+it is authoritative: a bus must be visible, within the configurable 250 m
+corridor around `line_geometry`, and still have the exact boarding station in
+`upcoming_stations`. A station found only in `passed_stations` is not
+catchable. Without live data, station predictions remain a best-effort
+fallback. `line1_widget.py` only formats the result and has no route logic.
+
+A bounded sample on 2026-07-15 caught one vehicle still present in the station
+prediction after `bus_update` changed it to hidden near the technical base.
+The live object exposed no depot or route-variant flag, so visibility and GPS
+geometry are the available signals for excluding this state.
 
 Consumers choose their own polling, caching, and presentation policy. Neither
 module depends on a particular website or device.

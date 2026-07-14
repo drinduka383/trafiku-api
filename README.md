@@ -27,9 +27,10 @@ python3 lak_tek.py
 python3 line1_widget.py
 ```
 
-`lak_tek.arrivals(client, live_buses)` merges station predictions with an
-optional `bus_update` payload. A live-only bus is returned only while the
-exact boarding stop remains in `upcoming_stations`.
+`lak_tek.arrivals(client, live_buses)` treats a supplied `bus_update` snapshot
+as authoritative: buses must be visible, still approaching the exact boarding
+stop, and within 250 m of `line_geometry`. Without a snapshot it falls back to
+the station predictions.
 
 Query individual routes:
 
