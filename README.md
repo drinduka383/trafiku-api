@@ -19,6 +19,18 @@ python3 smoke.py
 node socket.mjs
 ```
 
+Compact Line 1 dashboard widget:
+
+```sh
+python3 line1_widget.py
+# Optional continuous dashboard refresh:
+watch -n 20 python3 line1_widget.py
+```
+
+It prints the next two live predictions in both directions between Lakrishte
+and Fakulteti Teknik. If the service reports fewer than two active buses, the
+widget keeps its fixed shape and marks the missing prediction explicitly.
+
 Query individual routes:
 
 ```sh
@@ -48,6 +60,7 @@ const { success, data: stations } = await response.json();
 - `trafiku.py` — dependency-free Python library and CLI.
 - `smoke.py` — safe live flow using a station nearest central Prishtina.
 - `socket.mjs` — dependency-free Engine.IO/Socket.IO `bus_update` listener.
+- `line1_widget.py` — fixed-size two-way Line 1 ASCII arrival widget.
 - `test_trafiku.py` — one offline contract check for path encoding and payload validation.
 - `RESEARCH.md` — evidence, observed behavior, limits, and publication questions.
 - `evidence/` — bounded runtime screenshot and dated public station snapshot.
