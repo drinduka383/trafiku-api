@@ -19,6 +19,18 @@ python3 smoke.py
 node socket.mjs
 ```
 
+The `lak-tek` branch also provides the commute-specific JSON query and its
+portable ASCII consumer:
+
+```sh
+python3 lak_tek.py
+python3 line1_widget.py
+```
+
+`lak_tek.arrivals(client, live_buses)` merges station predictions with an
+optional `bus_update` payload. A live-only bus is returned only while the
+exact boarding stop remains in `upcoming_stations`.
+
 Query individual routes:
 
 ```sh
@@ -48,7 +60,9 @@ const { success, data: stations } = await response.json();
 - `trafiku.py` — dependency-free Python library and CLI.
 - `smoke.py` — safe live flow using a station nearest central Prishtina.
 - `socket.mjs` — dependency-free Engine.IO/Socket.IO `bus_update` listener.
-- `test_trafiku.py` — one offline contract check for path encoding and payload validation.
+- `lak_tek.py` — JSON-ready, two-way catchable-arrival query for one commute (`lak-tek` only).
+- `line1_widget.py` — compact ASCII consumer of that query (`lak-tek` only).
+- `test_trafiku.py` — offline client-contract and catchability checks.
 - `RESEARCH.md` — evidence, observed behavior, limits, and publication questions.
 - `evidence/` — bounded runtime screenshot and dated public station snapshot.
 

@@ -95,6 +95,26 @@ summary without storing the live feed.
 The repository listener was exercised successfully on 2026-07-14 and received
 a `bus_update` array containing 217 bus objects.
 
+## `lak-tek` stop mapping
+
+The four supplied map points resolve to these directional Line 1 stops:
+
+| Role | API station | Line 1 direction |
+| --- | --- | --- |
+| Lakrishte source | `5d556ddb8daa9a087b28cc6c` — Dardani - Perballe Lakrishtes | `5d552616ee0dd803fc6a55b4` |
+| Fakulteti Teknik destination | `5d5560518daa9a087b27f1c1` — Fakulteti Teknik (Kthimi) | `5d552616ee0dd803fc6a55b4` |
+| Fakulteti Teknik source | `5d5565af8daa9a087b2847da` — Fakulteti Teknik (Shkuarja) | `5d5525d1ee0dd803fc6a51b9` |
+| Lakrishte destination | `5d5566d08daa9a087b2859b1` — Lakrishte | `5d5525d1ee0dd803fc6a51b9` |
+
+`lak_tek.py` returns structured data. Station predictions are merged by bus ID
+with an optional `bus_update` payload. A live-only bus is retained only when
+the exact boarding station remains in `upcoming_stations`; a station found
+only in `passed_stations` is not catchable. `line1_widget.py` only formats that
+result and has no route logic of its own.
+
+Consumers choose their own polling, caching, and presentation policy. Neither
+module depends on a particular website or device.
+
 ## Evidence retained in Git
 
 - `evidence/stations-2026-07-14.json`: complete anonymous `/stations` response;
